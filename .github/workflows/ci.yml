@@ -29,8 +29,8 @@ jobs:
 
       - name: Install dependencies
         run: npm install
-        working-directory: ./webcrud/api/
-
+        working-directory: .
+        
       - name: Run unit tests
         run: npm test
-        working-directory: ./webcrud/api/
+        working-directory: .
