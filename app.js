@@ -7,7 +7,13 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-mongoose.connect("mongodb://localhost:27017/crud")
+const mongoURI = process.env.MONGODB_URI || "mongodb://localhost:27017/crud";
+
+mongoose.connect(mongoURI).then(() => {
+    console.log("Connected to MongoDB");
+}).catch((err) => {
+    console.log("Error connecting to MongoDB", err);
+});
 
 // POST request to create a new user
 app.post("/createUser", async (req, res) => {
