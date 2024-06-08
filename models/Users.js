@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 require('dotenv').config();
 
-const MONGO_COLLECTION = process.env.MONGO_COLLECTION;
+const MONGO_COLLECTION = process.env.MONGO_COLLECTION || 'vdt2024';
 
 const UserSchema = new mongoose.Schema({
     name: {
