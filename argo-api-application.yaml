@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: api
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/hantbk/api_service.git'
+    path: 'charts'
+    targetRevision: HEAD
+    helm:
+      valueFiles:
+        - 'https://raw.githubusercontent.com/hantbk/api_config/main/value.yaml'
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: api
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

@@ -1,6 +1,19 @@
+replicaCount: 1
+
 image:
   repository: nthhaf/hant-api-service
-  tag: latest
+  pullPolicy: IfNotPresent
+  tag: "latest"
 
 service:
-  nodePort: 30081
+  type: NodePort
+  port: 80
+  nodePort: 30002
+
+resources: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
