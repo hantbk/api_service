@@ -70,4 +70,4 @@ jobs:
           git commit -m "Update image tag by GitHub Actions Job change manifest: ${{ github.run_number }}"
           git push origin main
         env:
-          MY_REPO_TOKEN: ${{ secrets.MY_REPO_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.MY_REPO_TOKEN }}
