@@ -42,3 +42,34 @@ jobs:
       - name: Set output tag
         id: set_tag
         run: echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
+  modify-tag-on-another-repo:
+    needs: docker
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout config repository
+        uses: actions/checkout@v3
+        with:
+          repository: 'hant/api-config'
+          ref: 'main'
+          token: ${{ secrets.MY_REPO_TOKEN }}
+
+      - name: Modify image tag in values.yaml
+        run: |
+          Tag=${{ needs.docker.outputs.tag }}
+          echo "Updating image tag to $TAG"
+          sed -i.bak "s/tag: .*/tag: \"$TAG\"/" values.yaml
+          cat values.yaml  # Print values.yaml for debugging
+          
+      - name: Commit and push changes
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          git add .
+          git commit -m "Update image tag to ${{ needs.docker.outputs.tag }}"
+          git push origin main
+        env:
+          GITHUB_TOKEN: ${{ secrets.MY_REPO_TOKEN }}
+
+      
+
