@@ -38,3 +38,25 @@ jobs:
           tags: ${{ steps.meta2.outputs.tags }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Checkout config repository
+        uses: actions/checkout@v3
+        with:
+          repository: your_username/config-repo
+          token: ${{ secrets.GITHUB_TOKEN }}
+          path: config-repo
+      
+      - name: Update image tag in values.yaml
+        run: |
+          cd config-repo
+          sed -i "s/TAG_NAME_PLACEHOLDER/${{ github.ref_name }}/" values.yaml
+
+      
+      - name: Commit and push changes
+        run: |
+          cd config-repo
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add values.yaml
+          git commit -m "Update API image version to ${{ github.ref_name }}"
+          git push origin main
