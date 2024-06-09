@@ -16,6 +16,6 @@ WORKDIR /app
 
 COPY --from=build /app ./
 
-EXPOSE 9000
+EXPOSE 3000
 
 CMD ["npm", "start"]
