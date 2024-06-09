@@ -56,7 +56,7 @@ jobs:
 
       - name: Modify image tag in values.yaml
         run: |
-          Tag=${{ needs.docker.outputs.tag }}
+          TAG = ${{ needs.docker.outputs.tag }}
           echo "Updating image tag to $TAG"
           sed -i.bak "s/tag: .*/tag: \"$TAG\"/" values.yaml
           cat values.yaml  # Print values.yaml for debugging
