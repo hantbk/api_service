@@ -1,4 +1,7 @@
 const mongoose = require('mongoose');
+require('dotenv').config();
+
+const MONGO_COLLECTION = process.env.MONGO_COLLECTION || "vdt2024";
 
 const UserSchema = new mongoose.Schema({
     name: {
@@ -15,5 +18,5 @@ const UserSchema = new mongoose.Schema({
     },
 });
 
-const UserModel = mongoose.model('vdt2024', UserSchema);
+const UserModel = mongoose.model(MONGO_COLLECTION, UserSchema);
 module.exports = UserModel;
