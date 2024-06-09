@@ -17,7 +17,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
-      
+
       - name: Setup Docker Buildx 
         uses: docker/setup-buildx-action@v2
         id: buildx 
@@ -48,7 +48,7 @@ jobs:
 
       - name: Modify image tag in values.yaml
         run: |
-          TAG=${{ steps.meta2.outputs.tags }}
+          TAG=$(echo "${{ steps.meta2.outputs.tags }}" | cut -d ',' -f 1)
           echo "Updating image tag to $TAG"
           sed -i.bak "s/tag: .*/tag: \"$TAG\"/" values.yaml
           cat values.yaml  # Print values.yaml for debugging
