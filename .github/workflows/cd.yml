@@ -54,9 +54,11 @@ jobs:
           token: ${{ secrets.MY_REPO_TOKEN }}
           ref: main
 
+      - name: Set TAG from previous job output
+        run: echo "TAG=${{ needs.docker.outputs.tag }}" >> $GITHUB_ENV
+
       - name: Modify image tag in values.yaml
         run: |
-          TAG=${{ env.tag }}
           echo "Updating image tag to $TAG"
           sed -i.bak "s/tag: .*/tag: \"$TAG\"/" values.yaml
           cat values.yaml  # Print values.yaml for debugging
@@ -69,4 +71,5 @@ jobs:
           git add values.yaml
           git commit -m "Update image tag by GitHub Actions Job change manifest: ${{ github.run_number }}"
           git push origin main
+
 
