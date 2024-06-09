@@ -38,24 +38,3 @@ jobs:
           tags: ${{ steps.meta2.outputs.tags }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-
-      - name: Checkout config repository
-        uses: actions/checkout@v3
-        with:
-          repository: hantbk/api_config
-          token: ${{ secrets.MY_REPO_TOKEN }}
-          path: config-repo
-      
-      - name: Update image tag in values.yaml
-        run: |
-          sed -i "s/TAG_NAME_PLACEHOLDER/${{ github.ref_name }}/" values.yaml
-
-      
-      - name: Commit and push changes
-        run: |
-          cd config-repo
-          git config user.name "hantbk"
-          git config user.email "captainnemot1k60@gmail.com"
-          git add .
-          git commit -m "Update API image version to ${{ github.ref_name }}"
-          git push origin main
