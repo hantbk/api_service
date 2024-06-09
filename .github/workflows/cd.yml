@@ -43,10 +43,6 @@ jobs:
         id: set_tag
         run: echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
-  modify-image-tag:
-    needs: docker
-    runs-on: ubuntu-latest
-    steps:
       - name: Checkout config repository
         uses: actions/checkout@v3
         with:
@@ -55,10 +51,11 @@ jobs:
           ref: main
 
       - name: Set TAG from previous job output
-        run: echo "TAG=${{ needs.docker.outputs.tag }}" >> $GITHUB_ENV
+        run: echo "TAG=${{ steps.set_tag.outputs.tag }}" >> $GITHUB_ENV
 
       - name: Modify image tag in values.yaml
         run: |
+          TAG=${TAG}
           echo "Updating image tag to $TAG"
           sed -i.bak "s/tag: .*/tag: \"$TAG\"/" values.yaml
           cat values.yaml  # Print values.yaml for debugging
@@ -71,5 +68,3 @@ jobs:
           git add values.yaml
           git commit -m "Update image tag by GitHub Actions Job change manifest: ${{ github.run_number }}"
           git push origin main
-
-
