@@ -1,0 +1,6 @@
+image:
+  repository: nthhaf/hant-api-service
+  tag: latest
+
+service:
+  nodePort: 30081
