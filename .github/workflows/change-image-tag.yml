@@ -2,7 +2,6 @@ name: Build and Publish docker image
 run-name: "Publish docker image commit sha ${{ inputs.SHA || github.sha }} by @${{ github.actor }}"
 
 on:
-  workflow_dispatch:
   push:
     tags:
       - 'v*'
