@@ -39,10 +39,6 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Set output tag
-        id: set_tag
-        run: echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
-
       - name: Checkout config repository
         uses: actions/checkout@v3
         with:
@@ -50,12 +46,9 @@ jobs:
           token: ${{ secrets.MY_REPO_TOKEN }}
           ref: main
 
-      - name: Set TAG from previous job output
-        run: echo "TAG=${{ steps.set_tag.outputs.tag }}" >> $GITHUB_ENV
-
       - name: Modify image tag in values.yaml
         run: |
-          TAG=${TAG}
+          TAG=${{ steps.meta2.outputs.tags }}
           echo "Updating image tag to $TAG"
           sed -i.bak "s/tag: .*/tag: \"$TAG\"/" values.yaml
           cat values.yaml  # Print values.yaml for debugging
