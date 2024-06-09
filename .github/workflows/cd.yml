@@ -50,7 +50,7 @@ jobs:
       - name: Checkout config repository
         uses: actions/checkout@v3
         with:
-          repository: 'hantbk/api-config'
+          repository: 'hantbk/api_config'
           ref: 'main'
           token: ${{ secrets.MY_REPO_TOKEN }}
 
