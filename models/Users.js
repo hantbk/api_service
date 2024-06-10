@@ -1,8 +1,6 @@
 const mongoose = require('mongoose');
 require('dotenv').config();
 
-const MONGODB_COLLECTION = process.env.MONGODB_COLLECTION || "vdt2024";
-
 const UserSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -18,5 +16,5 @@ const UserSchema = new mongoose.Schema({
     },
 });
 
-const UserModel = mongoose.model(MONGODB_COLLECTION, UserSchema);
+const UserModel = mongoose.model('vdt2024', UserSchema);
 module.exports = UserModel;
