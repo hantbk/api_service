@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: {{ .Chart.Name }}
   labels:
-    job: node-api
+    my-api: {{ .Chart.Name }}
     app: {{ .Chart.Name }}
 spec:
   selector:
