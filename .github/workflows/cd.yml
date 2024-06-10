@@ -46,12 +46,12 @@ jobs:
           token: ${{ secrets.MY_REPO_TOKEN }}
           path: config-repo
 
-      - name: Update API image in values.yaml
+      - name: Update API image in value.yaml
         run: |
           cd config-repo
-          sed -i "s|tag:.*|tag: \"${{ github.ref_name }}\"|g" values.yaml
+          sed -i "s|tag:.*|tag: \"${{ github.ref_name }}\"|g" value.yaml
           git config --global user.email "captainnemot1k60@gmail.com"
           git config --global user.name "hantbk"
-          git add values.yaml
+          git add value.yaml
           git commit -m "Update API image to ${{ secrets.DOCKERHUB_USERNAME }}/hant-api-service:${{ github.ref_name }}"
           git push
