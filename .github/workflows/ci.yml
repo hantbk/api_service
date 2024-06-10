@@ -1,11 +1,11 @@
 name: Continuous Integration
 
 on:
-  pull_request: 
-    branches: 
-      - main 
+  pull_request:
+    branches:
+      - main
   push:
-    branches: 
+    branches:
       - '*'
 
 jobs:
@@ -17,6 +17,17 @@ jobs:
         image: mongo:latest
         ports:
           - 27017:27017
+        options: > 
+          --health-cmd "mongo --eval 'db.runCommand({ ping: 1 })'" 
+          --health-interval=10s 
+          --health-timeout=5s 
+          --health-retries=5
+
+    env:
+      MONGODB_HOST: localhost
+      MONGODB_PORT: 27017
+      MONGODB_DB: crud
+      MONGODB_COLLECTION: vdt2024
 
     steps:
       - name: Checkout code
@@ -29,8 +40,10 @@ jobs:
 
       - name: Install dependencies
         run: npm install
-        working-directory: .
-        
+
+      - name: Wait for MongoDB
+        run: |
+          until mongo --host ${{ job.services.mongodb.host }} --eval 'print("waited for connection")'; do sleep 1; done
+
       - name: Run unit tests
         run: npm test
-        working-directory: .

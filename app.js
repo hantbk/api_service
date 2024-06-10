@@ -8,7 +8,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const mongoURI = process.env.MONGODB_URI || "mongodb://localhost:27017/crud";
+const mongoURI = "mongodb://${process.env.MONGODB_HOST}:${process.env.MONGODB_PORT}/${process.env.MONGODB_DB}" || "mongodb://localhost:27017/crud";
 
 mongoose.connect(mongoURI).then(() => {
     console.log("Connected to MongoDB");
