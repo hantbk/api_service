@@ -24,7 +24,7 @@ jobs:
           --health-retries=5
 
     env:
-      MONGODB_HOST: localhost
+      MONGODB_HOST: mongodb
       MONGODB_PORT: 27017
       MONGODB_DB: crud
       MONGODB_COLLECTION: vdt2024
