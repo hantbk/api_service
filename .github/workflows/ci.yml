@@ -1,11 +1,11 @@
 name: Continuous Integration
 
 on:
-  pull_request:
-    branches:
-      - main
+  pull_request: 
+    branches: 
+      - main 
   push:
-    branches:
+    branches: 
       - '*'
 
 jobs:
@@ -17,17 +17,11 @@ jobs:
         image: mongo:latest
         ports:
           - 27017:27017
-        options: >
-          --health-cmd "mongo --eval 'db.runCommand({ ping: 1 })'"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
-
-    env:
-      MONGODB_HOST: mongodb
-      MONGODB_PORT: 27017
-      MONGODB_DB: crud
-      MONGODB_COLLECTION: vdt2024
+        options: > 
+          --health-cmd "mongo --eval 'db.runCommand({ ping: 1 })'" 
+          --health-interval 10s 
+          --health-timeout 5s 
+          --health-retries 5
 
     steps:
       - name: Checkout code
@@ -40,10 +34,26 @@ jobs:
 
       - name: Install dependencies
         run: npm install
+        working-directory: .
 
-      - name: Wait for MongoDB
+      - name: Wait for MongoDB to be ready
         run: |
-          until mongo --host ${{ env.MONGODB_HOST }} --eval 'print("waited for connection")'; do sleep 1; done
+          for i in {1..30}; do
+            if nc -z localhost 27017; then
+              echo "MongoDB is up!"
+              break
+            fi
+            echo "Waiting for MongoDB..."
+            sleep 1
+          done
 
       - name: Run unit tests
         run: npm test
+        env:
+          PORT: ${{ env.PORT }}
+          MONGODB_HOST: ${{ env.MONGODB_HOST }}
+          MONGODB_PORT: ${{ env.MONGODB_PORT }}
+          MONGODB_DB: ${{ env.MONGODB_DB }}
+          MONGODB_COLLECTION: ${{ env.MONGODB_COLLECTION }}
+          MONGODB_URI: mongodb://${{ env.MONGODB_HOST }}:${{ env.MONGODB_PORT }}/${{ env.MONGODB_DB }}
+        working-directory: .
