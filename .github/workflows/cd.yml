@@ -39,25 +39,19 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Checkout config repository
+      - name: Checkout config repo
         uses: actions/checkout@v3
         with:
           repository: hantbk/api_config
           token: ${{ secrets.MY_REPO_TOKEN }}
-          ref: main
+          path: config-repo
 
-      - name: Modify image tag in values.yaml
+      - name: Update API image in values.yaml
         run: |
-          TAG=$(echo "${{ steps.meta2.outputs.tags }}" | cut -d ',' -f 1)
-          echo "Updating image tag to $TAG"
-          sed -i.bak "s/tag: .*/tag: \"$TAG\"/" values.yaml
-          cat values.yaml  # Print values.yaml for debugging
-
-      - name: Commit and push changes
-        run: |
-          git config --global user.email 'captainnemot1k60@gmail.com'
-          git config --global user.name 'hantbk'
-          rm values.yaml.bak
+          cd config-repo
+          sed -i "s|tag:.*|tag: \"${{ github.ref_name }}\"|g" values.yaml
+          git config --global user.email "captainnemot1k60@gmail.com"
+          git config --global user.name "hantbk"
           git add values.yaml
-          git commit -m "Update image tag by GitHub Actions Job change manifest: ${{ github.run_number }}"
-          git push origin main
+          git commit -m "Update API image to ${{ secrets.DOCKERHUB_USERNAME }}/hant-api-service:${{ github.ref_name }}"
+          git push
