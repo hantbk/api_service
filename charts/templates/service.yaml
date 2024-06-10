@@ -2,15 +2,15 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ .Chart.Name }}
+  namespace: monitoring
   labels:
-    my-api: {{ .Chart.Name }}
     app: {{ .Chart.Name }}
 spec:
   selector:
     app: {{ .Chart.Name }}
   type: NodePort
   ports:
-  - name: api
+  - name: web
     protocol: TCP
     port: 3000
     targetPort: 3000
