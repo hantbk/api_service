@@ -2,12 +2,16 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ .Chart.Name }}
+  labels:
+    job: node-api
+    app: {{ .Chart.Name }}
 spec:
   selector:
     app: {{ .Chart.Name }}
   type: NodePort
   ports:
-  - protocol: TCP
+  - name: api
+    protocol: TCP
     port: 3000
     targetPort: 3000
     nodePort: {{ .Values.service.nodePort }}
