@@ -19,8 +19,3 @@ spec:
     automated:
       prune: true
       selfHeal: true
-  ignoreDifferences:
-    - group: apps/v1
-      kind: Deployment
-      jsonPointers:
-        - /spec/template/spec/containers/0/image
