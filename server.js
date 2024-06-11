@@ -6,6 +6,38 @@ const userRoutes = require("./src/routes/user.routes.js");
 
 // create express app
 const app = express();
+const promBundle = require("express-prom-bundle");
+
+const metricsMiddleware = promBundle({
+  includeMethod: true,
+  includePath: true,
+  includeStatusCode: true,
+  includeUp: true,
+  customLabels: { app: "api", project_type: "test metrics" },
+  promClient: { collectDefaultMetrics: {} },
+});
+
+app.use(metricsMiddleware);
+
+// Default endpoint
+app.get("/", (req, res) => {
+  res.json({
+    "GET /": "All routes",
+    "GET /metrics": "Metrics data for the API",
+    "POST /createUser": "Create a new user",
+    "GET /user/:userId": "Get a single user",
+    "PUT /updateUser/:id": "Update a user",
+    "DELETE /deleteUser/:id": "Delete a user",
+    "POST /bye": "POST request: + post data",
+  });
+});
+
+// Metrics endpoint
+app.get("/metrics", (req, res) => {
+  res.set("Content-Type", metricsMiddleware.promClient.register.contentType);
+  res.end(metricsMiddleware.promClient.register.metrics());
+});
+
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
