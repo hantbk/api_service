@@ -1,6 +1,33 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  name: mongo
+specs:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongo
+  template:
+    metadata:
+      labels:
+        app: mongo
+    spec:
+      containers:
+      - name: mongo
+        image: mongo:latest
+        ports:
+        - containerPort: 27017
+        volumeMounts:
+        - name: mongo-data
+          mountPath: /data/db
+      volumes:
+      - name: mongo-data
+        emptyDir: {}
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
   name: {{ .Chart.Name }}
   labels:
     app: {{ .Chart.Name }}
@@ -17,8 +44,10 @@ spec:
       containers:
       - name: {{ .Chart.Name }}
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: Never
         ports:
         - containerPort: 3000
         env:
         - name: MONGO_URI
-          value: mongodb://mongodb:27017/crud
+          value: mongodb://mongo:27017/vdt2024
+      restartPolicy: Always
