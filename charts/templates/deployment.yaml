@@ -2,7 +2,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mongo
-specs:
+  labels:
+    app: mongo
+spec:
   replicas: 1
   selector:
     matchLabels:
