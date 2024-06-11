@@ -1,21 +1,20 @@
-# Stage 1: Build the application
-FROM node:lts-alpine AS build
+# Use the official Node.js 14 image as the base image
+FROM node:14
 
+# Set the working directory inside the container
 WORKDIR /app
 
+# Copy package.json and package-lock.json to the working directory
 COPY package*.json ./
 
-RUN npm ci --only=production
+# Install dependencies
+RUN npm install
 
+# Copy the rest of the application code
 COPY . .
 
-# Stage 2: Production-ready image
-FROM node:lts-alpine AS production
-
-WORKDIR /app
-
-COPY --from=build /app ./
-
+# Expose the port on which the application will run
 EXPOSE 3000
 
-CMD ["npm", "start"]
+# Start the application
+CMD ["node", "server.js"]
