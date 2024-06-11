@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const config = require("./config/default.config.js");
 const userRoutes = require("./src/routes/user.routes.js");
+const morgan = require("morgan");
 
 // create express app
 const app = express();
@@ -18,6 +19,9 @@ const metricsMiddleware = promBundle({
 });
 
 app.use(metricsMiddleware);
+
+// Log requests
+app.use(morgan(':method :url :status'));
 
 // Default endpoint
 app.get("/", (req, res) => {
@@ -37,7 +41,6 @@ app.get("/metrics", (req, res) => {
   res.set("Content-Type", metricsMiddleware.promClient.register.contentType);
   res.end(metricsMiddleware.promClient.register.metrics());
 });
-
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -66,5 +69,5 @@ app.use("/", userRoutes);
 // listen for requests
 const PORT = config.port;
 app.listen(PORT, function () {
-  console.log("Server is listening on port" + PORT);
+  console.log("Server is listening on port " + PORT);
 });
