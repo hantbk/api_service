@@ -51,7 +51,7 @@ spec:
         - containerPort: 3000
         env:
         - name: MONGO_URI
-          value: mongodb://mongo:27017/vdt2024
+          value: "mongodb+srv://hant:kgA5BbqfQCoJDmR4@cluster73289.pchihpf.mongodb.net/?retryWrites=true&w=majority&appName=Cluster73289"
       restartPolicy: Always
       - name: haproxy-sidecar
         image: haproxy:latest

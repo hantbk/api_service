@@ -103,47 +103,35 @@ const calculate_cpu_usage = () => {
 };
 
 app.use((req, res, next) => {
-  // Get's the Req URL object
   const req_url = new URL(req.url, `http://${req.headers.host}`);
-  // Start's the prom-client histogram timer for the request
   const endTimer = http_response_rate_histogram.startTimer();
-
-  //Collect's the memory usage before processing the requests
   const used_memory_before = memoryUsage().rss;
-  //Collect's the CPU usage before processing the requests
   const used_cpu_before = calculate_cpu_usage();
 
-  // Copies the original res.send function to a variable
   const original_res_send_function = res.send;
 
-  // Creates a new send function with the functionality of ending the timer, and incrementing the http_request_total metric whenever the response.send function is called
   const res_send_interceptor = function (body) {
-    // Ends the histogram timer for the request
-    const timer = endTimer(
-      new MetricLabelClass(req.method, req_url.pathname, res.statusCode)
-    );
-    console.log(`HTTP request took ${timer} seconds to process`);
+    if (!res.headersSent) {
+      // Ends the histogram timer for the request
+      const timer = endTimer(
+        new MetricLabelClass(req.method, req_url.pathname, res.statusCode)
+      );
+      console.log(`HTTP request took ${timer} seconds to process`);
 
-    //Collect's the memory usage after processing the requests
-    const used_memory_after = memoryUsage().rss;
-    //Collect's the CPU usage after processing the requests
-    const used_cpu_after = calculate_cpu_usage();
+      const used_memory_after = memoryUsage().rss;
+      const used_cpu_after = calculate_cpu_usage();
 
-    // Increment the http_request_total metric
-    http_request_total.inc(
-      new MetricLabelClass(req.method, req_url.pathname, res.statusCode)
-    );
+      http_request_total.inc(
+        new MetricLabelClass(req.method, req_url.pathname, res.statusCode)
+      );
 
-    // Update the nodejs_memory guage with the differences in the memory usage
-    nodejs_memory.set(used_memory_after - used_memory_before);
-    // Update the nodejs_cpu_usage guage with the differences in the cpu usage
-    nodejs_cpu_usage.set(used_cpu_after - used_cpu_before);
+      nodejs_memory.set(used_memory_after - used_memory_before);
+      nodejs_cpu_usage.set(used_cpu_after - used_cpu_before);
 
-    // Calls the original response.send function
-    original_res_send_function.call(this, body);
+      original_res_send_function.call(this, body);
+    }
   };
 
-  // Overrides the existing response.send object/property with the function defined above
   res.send = res_send_interceptor;
   next();
 });
