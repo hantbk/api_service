@@ -53,3 +53,16 @@ spec:
         - name: MONGO_URI
           value: mongodb://mongo:27017/vdt2024
       restartPolicy: Always
+      - name: haproxy-sidecar
+        image: haproxy:latest
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: haproxy-config
+          mountPath: /usr/local/etc/haproxy/haproxy.cfg
+          subPath: haproxy.cfg
+      volumes:
+      - name: haproxy-config
+        configMap:
+          name: haproxy-config
+      restartPolicy: Always
