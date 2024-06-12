@@ -8,5 +8,5 @@ image:
 service:
   nodePort: 30002
 
-mongodb:
+mongo:
   MONO_URI: "mongodb+srv://hant:kgA5BbqfQCoJDmR4@cluster73289.pchihpf.mongodb.net/vdt2024?retryWrites=true&w=majority&appName=Cluster73289"

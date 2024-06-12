@@ -1,35 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mongo
-  labels:
-    app: mongo
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: mongo
-  template:
-    metadata:
-      labels:
-        app: mongo
-    spec:
-      containers:
-      - name: mongo
-        image: mongo:latest
-        ports:
-        - containerPort: 27017
-        volumeMounts:
-        - name: mongo-data
-          mountPath: /data/db
-      volumes:
-      - name: mongo-data
-        emptyDir: {}
-
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
   name: {{ .Chart.Name }}
   labels:
     app: {{ .Chart.Name }}
@@ -43,6 +14,7 @@ spec:
       labels:
         app: {{ .Chart.Name }}
     spec:
+      restartPolicy: Always
       containers:
       - name: {{ .Chart.Name }}
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
@@ -51,8 +23,9 @@ spec:
         - containerPort: 3000
         env:
         - name: MONGO_URI
-          value: {{ .Values.mongodb.MONGO_URI }}
-      restartPolicy: Always
+          value: "mongodb+srv://hant:kgA5BbqfQCoJDmR4@cluster73289.pchihpf.mongodb.net/vdt2024?retryWrites=true&w=majority&appName=Cluster73289"
+        - name: PORT
+          value: "3000"
       - name: haproxy-sidecar
         image: haproxy:latest
         ports:
@@ -65,4 +38,3 @@ spec:
       - name: haproxy-config
         configMap:
           name: haproxy-config
-      restartPolicy: Always
