@@ -24,17 +24,3 @@ spec:
         env:
         - name: MONGO_URI
           value: "mongodb+srv://hant:kgA5BbqfQCoJDmR4@cluster73289.pchihpf.mongodb.net/vdt2024?retryWrites=true&w=majority&appName=Cluster73289"
-        - name: PORT
-          value: "3000"
-      - name: haproxy-sidecar
-        image: haproxy:latest
-        ports:
-        - containerPort: 80
-        volumeMounts:
-        - name: haproxy-config
-          mountPath: /usr/local/etc/haproxy/haproxy.cfg
-          subPath: haproxy.cfg
-      volumes:
-      - name: haproxy-config
-        configMap:
-          name: haproxy-config
