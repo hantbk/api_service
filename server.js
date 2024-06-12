@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const config = require("./config/default.config.js");
 const userRoutes = require("./src/routes/user.routes.js");
+const authRoutes = require("./src/routes/auth.routes.js");
 const memoryUsage = require("process").memoryUsage;
 const cpus = require("os").cpus;
 
@@ -156,18 +157,13 @@ app.use(bodyParser.json());
 
 mongoose.Promise = global.Promise;
 
-mongoose.connect(config.dbUrl, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
-
-mongoose.connection.on("error", function (err) {
-  console.log(`Could not connect to the database: ${err}`);
-  process.exit();
-});
-mongoose.connection.once("open", function () {
-  console.log("Successfully connected to the database");
-});
+mongoose.connect(config.dbUrl)
+  .then(() => {
+    console.log("Successfully connected to the database");
+  }).catch(err => {
+    console.log('Could not connect to the database. Exiting now...', err);
+    process.exit();
+  });
 
 app.get("/", (req, res, next) => {
   res.setHeader("Content-Type", "text/html");
@@ -176,7 +172,10 @@ app.get("/", (req, res, next) => {
 });
 
 // User Routes
-app.use("/", userRoutes);
+app.use("/api/users", userRoutes);
+
+// Auth Routes
+app.use("/auth", authRoutes);
 
 // listen for requests
 app.listen(PORT, function () {
