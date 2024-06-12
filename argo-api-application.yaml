@@ -10,7 +10,7 @@ spec:
     path: 'charts'
     helm:
       valueFiles:
-        - 'https://raw.githubusercontent.com/hantbk/api_config/main/value.yaml'
+        - 'https://raw.githubusercontent.com/hantbk/api_config/main/values.yaml'
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: api
